@@ -62,14 +62,15 @@ public class SMat implements Matrix {
         printWriter.close();
     }
 
-    private ArrayList<Double> values;
-    private ArrayList<Integer> cols;
-    private ArrayList<Integer> pointers;
-    public int sizeOfMatrix = 0;
+    public  ArrayList<Double> values;
+    public  ArrayList<Integer> cols;
+    public  ArrayList<Integer> pointers;
+    public  int sizeOfMatrix;
 
     public static void main(String[] args) throws IOException {
         SMat a = new SMat();
         fillArrays(a, "3.txt");
+
         SMat b = new SMat();
         fillArrays(b, "4.txt");
         SMat c;
@@ -183,13 +184,13 @@ public class SMat implements Matrix {
         return s;
     }
 
-    private static void fillArrays(SMat a, String fileName) throws IOException {
+    public static void fillArrays(SMat a, String fileName) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
         String s = reader.readLine();
         a.values = new ArrayList<>();
         a.cols = new ArrayList<>();
         a.pointers = new ArrayList<>();
-        a.pointers.add(0);
+        a.pointers.add(0);a.sizeOfMatrix=0;
         while (s != null) {
             a.sizeOfMatrix++;
             int collNumber = 0;
@@ -246,7 +247,7 @@ public class SMat implements Matrix {
         return a;
     }
 
-    private static void printf(SMat a) {
+    public static void printf(SMat a) {
         printf(a.values);
         printf(a.cols);
         if (a.pointers != null) printf(a.pointers);

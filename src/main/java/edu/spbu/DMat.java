@@ -49,21 +49,34 @@ public class DMat implements Matrix {
     public ArrayList list;
 
     public static void main(String[] args) throws IOException {
-        DMat fill = new DMat();
         DMat a = new DMat();
-        DMat b = new DMat();
         a.list = new ArrayList();
-        b.list = new ArrayList();
-        a.list = fill.getMat("1.txt");
-        b.list = fill.getMat("3.txt");
+        a.list = a.getMat("1.txt");
         a.arr = a.toArray(a.list);
+        DMat b = new DMat();
+        b.list = new ArrayList();
+        b.list = b.getMat("3.txt");
         b.arr = b.toArray(b.list);
+
         DMat c;
         if (a.arr.length == b.arr.length) {
             c = (DMat) a.mul(b);
             c.saveToFile("mulDDResult.txt");
 
         }
+
+
+    }
+
+    public boolean equals(DMat b) {
+        DMat a = this;
+        boolean ans = true;
+        for (int i = 0; i < a.arr.length; i++) {
+            for (int j = 0; j < b.arr.length; j++) {
+                if (a.arr[i][j] != b.arr[i][j]) ans = false;
+            }
+        }
+        return ans;
     }
 
     private DMat mulDD(DMat b) {
@@ -86,6 +99,7 @@ public class DMat implements Matrix {
         a = a.transpose(a);
         c = (SMat) b.transpose(b).mul(a);
         c = c.transpose(c);
+        c.sizeOfMatrix = b.sizeOfMatrix;
 
         return c;
     }
@@ -101,7 +115,7 @@ public class DMat implements Matrix {
         return a;
     }
 
-    private void printf(DMat a) {
+    public static void printf(DMat a) {
         for (int i = 0; i < a.arr.length; i++) {
             for (int j = 0; j < a.arr.length; j++) {
                 System.out.print(a.arr[i][j] + " ");
