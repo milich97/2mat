@@ -6,8 +6,14 @@ import java.util.Date;
 
 public class SMat implements Matrix {
 
+    public SMat(String fileName) throws IOException {
+        if (fileName != null)
+            fillArrays(this, fileName);
+    }
+
+
     @Override
-    public Matrix mul(Matrix bb) {
+    public Matrix mul(Matrix bb) throws IOException {
         SMat a = this;
         SMat res = null;
         if (bb instanceof DMat) {
@@ -62,37 +68,42 @@ public class SMat implements Matrix {
         printWriter.close();
     }
 
-    public  ArrayList<Double> values;
-    public  ArrayList<Integer> cols;
-    public  ArrayList<Integer> pointers;
-    public  int sizeOfMatrix;
+    public ArrayList<Double> values;
+    public ArrayList<Integer> cols;
+    public ArrayList<Integer> pointers;
+    public int sizeOfMatrix;
+
 
     public static void main(String[] args) throws IOException {
-        SMat a = new SMat();
-        fillArrays(a, "3.txt");
+        SMat s1 = new SMat("2.txt");
+        SMat s2 = new SMat("2.txt");
+        DMat d1 = new DMat("2.txt");
+        DMat d2 = new DMat("2.txt");
 
-        SMat b = new SMat();
-        fillArrays(b, "4.txt");
-        SMat c;
-        DMat dMat = new DMat();
-        dMat.list = dMat.getMat("1.txt");
-        dMat.arr = dMat.toArray(dMat.list);
-        SMat ds=(SMat) dMat.mul(a);
-        ds.saveToFile("mulDSResult.txt");
-
-        if (a.sizeOfMatrix == b.sizeOfMatrix) {
-            c = (SMat) a.mul(b);
-            c.sizeOfMatrix = a.sizeOfMatrix;
-            c.saveToFile("mulSSResult.txt");
+        if (d1.arr.length == d2.arr.length) {
+            DMat dd = (DMat) d1.mul(d2);
+            dd.saveToFile("mulDDResult.txt");
+        }
+        if (s1.sizeOfMatrix == s2.sizeOfMatrix) {
+            SMat ss = (SMat) s1.mul(s2);
+            ss.saveToFile("mulSSResult.txt");
+        }
+        if (s1.sizeOfMatrix == d1.arr.length) {
+            SMat sd = (SMat) s1.mul(d1);
+            sd.saveToFile("mulSDResult.txt");
+        }
+        if (d1.arr.length == s1.sizeOfMatrix) {
+            SMat ds = (SMat) d1.mul(s1);
+            ds.saveToFile("mulDSResult.txt");
         }
 
     }
 
 
-    private SMat mulSD(DMat b) {
-        SMat c = new SMat();
+    private SMat mulSD(DMat b) throws IOException {
+        SMat c = new SMat(null);
         SMat a = this;
-
+        c.sizeOfMatrix = a.sizeOfMatrix;
         c.values = new ArrayList<>();
         c.cols = new ArrayList<>();
         c.pointers = new ArrayList<>();
@@ -101,7 +112,7 @@ public class SMat implements Matrix {
         for (int stroka = 0; stroka < a.pointers.size() - 1; stroka++) {
             for (int stolb = 0; stolb < b.list.size(); stolb++) {
                 res = 0;
-                SMat v1 = new SMat();
+                SMat v1 = new SMat(null);
                 v1.sizeOfMatrix = a.sizeOfMatrix;
                 v1.values = new ArrayList<>();
                 v1.cols = new ArrayList<>();
@@ -110,9 +121,7 @@ public class SMat implements Matrix {
                     v1.values.add(a.values.get(i));
                     v1.cols.add(a.cols.get(i));
                 }
-                //res = v1.scalarMul(v2);
 
-                //printf(v1);
                 for (int i = 0; i < v1.values.size(); i++) {
                     res = res + v1.values.get(i) * b.arr[v1.cols.get(i)][stolb];
                 }
@@ -129,23 +138,24 @@ public class SMat implements Matrix {
         return c;
     }
 
-    private SMat mulSS(SMat b) {
+    private SMat mulSS(SMat b) throws IOException {
         SMat a = this;
-        SMat c = new SMat();
+        SMat c = new SMat(null);
         b = b.transpose(b);
         c.values = new ArrayList<>();
         c.cols = new ArrayList<>();
         c.pointers = new ArrayList<>();
+        c.sizeOfMatrix = a.sizeOfMatrix;
         double res;
         c.pointers.add(0);
         for (int stroka = 0; stroka < a.pointers.size() - 1; stroka++) {
             for (int stolb = 0; stolb < b.pointers.size() - 1; stolb++) {
-                SMat v1 = new SMat();
+                SMat v1 = new SMat(null);
                 v1.sizeOfMatrix = a.sizeOfMatrix;
                 v1.values = new ArrayList<>();
                 v1.cols = new ArrayList<>();
                 v1.pointers = new ArrayList<>();
-                SMat v2 = new SMat();
+                SMat v2 = new SMat(null);
                 v2.values = new ArrayList<>();
                 v2.cols = new ArrayList<>();
                 v2.pointers = new ArrayList<>();
@@ -190,7 +200,8 @@ public class SMat implements Matrix {
         a.values = new ArrayList<>();
         a.cols = new ArrayList<>();
         a.pointers = new ArrayList<>();
-        a.pointers.add(0);a.sizeOfMatrix=0;
+        a.pointers.add(0);
+        a.sizeOfMatrix = 0;
         while (s != null) {
             a.sizeOfMatrix++;
             int collNumber = 0;
@@ -253,11 +264,38 @@ public class SMat implements Matrix {
         if (a.pointers != null) printf(a.pointers);
     }
 
-    private static void printf(ArrayList arrayList) {
+    private static void printf(DMat a) {
+        for (int i = 0; i < a.arr.length; i++) {
+            for (int j = 0; j < a.arr.length; j++) {
+                System.out.print(a.arr[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void printf(ArrayList arrayList) {
         for (int i = 0; i < arrayList.size(); i++) {
             System.out.print(arrayList.get(i) + "  ");
         }
         System.out.println();
+    }
+
+    public boolean equals(SMat b) {
+        SMat a = this;
+        boolean ans = true;
+        if (a.values.size() == b.values.size() && a.cols.size() == b.cols.size() && a.pointers.size() == b.pointers.size()) {
+            for (int i = 0; i < a.values.size(); i++) {
+                if ((double) a.values.get(i) != (double) b.values.get(i) || (int) a.cols.get(i) != (int) b.cols.get(i))
+                    ans = false;
+
+
+            }
+            for (int i = 0; i < a.pointers.size(); i++) {
+                if (a.pointers.get(i) != b.pointers.get(i)) ans = false;
+            }
+            if ((int) a.sizeOfMatrix != (int) b.sizeOfMatrix) ans = false;
+        } else ans = false;
+        return ans;
     }
 
 

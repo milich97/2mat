@@ -6,8 +6,16 @@ import java.util.ArrayList;
 
 public class DMat implements Matrix {
 
+    public DMat(String fileName) throws IOException {
+        if (fileName != null) {
+            this.list = new ArrayList();
+            this.list = this.getMat(fileName);
+            this.arr = this.toArray(this.list);
+        }
+    }
+
     @Override
-    public Matrix mul(Matrix bb) {
+    public Matrix mul(Matrix bb) throws IOException {
         DMat resD;
         SMat resS;
         DMat a = this;
@@ -48,25 +56,9 @@ public class DMat implements Matrix {
     public double[][] arr;
     public ArrayList list;
 
-    public static void main(String[] args) throws IOException {
-        DMat a = new DMat();
-        a.list = new ArrayList();
-        a.list = a.getMat("1.txt");
-        a.arr = a.toArray(a.list);
-        DMat b = new DMat();
-        b.list = new ArrayList();
-        b.list = b.getMat("3.txt");
-        b.arr = b.toArray(b.list);
-
-        DMat c;
-        if (a.arr.length == b.arr.length) {
-            c = (DMat) a.mul(b);
-            c.saveToFile("mulDDResult.txt");
-
-        }
-
-
-    }
+//    public static void main(String[] args) throws IOException {
+//
+//    }
 
     public boolean equals(DMat b) {
         DMat a = this;
@@ -79,9 +71,9 @@ public class DMat implements Matrix {
         return ans;
     }
 
-    private DMat mulDD(DMat b) {
+    private DMat mulDD(DMat b) throws IOException {
         DMat a = this;
-        DMat res = new DMat();
+        DMat res = new DMat(null);
         res.arr = new double[a.arr.length][a.arr.length];
         for (int i = 0; i < a.arr.length; i++) {
             for (int j = 0; j < a.arr.length; j++) {
@@ -93,18 +85,23 @@ public class DMat implements Matrix {
         return res;
     }
 
-    private Matrix mulDS(SMat b) {
-        SMat c;
+    private Matrix mulDS(SMat b) throws IOException {
+        SMat res;
         DMat a = this;
-        a = a.transpose(a);
-        c = (SMat) b.transpose(b).mul(a);
-        c = c.transpose(c);
-        c.sizeOfMatrix = b.sizeOfMatrix;
-
-        return c;
+        DMat aT = transpose(a);
+        System.out.println(a.equals(aT));
+        SMat bT = b.transpose(b);
+        res = (SMat) bT.mul(aT);
+//        for (int i = 0; i < b.values.size(); i++) {
+//            System.out.print(b.values.get(i) + " ");
+//        }
+        res = res.transpose(res);
+        res.sizeOfMatrix = b.sizeOfMatrix;
+        return res;
     }
 
     private DMat transpose(DMat a) {
+
         for (int i = 1; i < a.arr.length; i++) {
             for (int j = 0; j < i; j++) {
                 double k = a.arr[i][j];
