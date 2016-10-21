@@ -101,19 +101,19 @@ public class SMat implements Matrix {
 
         if (d1.arr.length == d2.arr.length) {
             DMat dd = (DMat) d1.mul(d2);
-            dd.saveToFile("mulDDResult.txt");
+            //dd.saveToFile("mulDDResult.txt");
         }
         if (s1.sizeOfMatrix == s2.sizeOfMatrix) {
             SMat ss = (SMat) s1.mul(s2);
-            ss.saveToFile("mulSSResult.txt");
+           // ss.saveToFile("mulSSResult.txt");
         }
         if (s1.sizeOfMatrix == d1.arr.length) {
             SMat sd = (SMat) s1.mul(d1);
-            sd.saveToFile("mulSDResult.txt");
+           // sd.saveToFile("mulSDResult.txt");
         }
         if (d1.arr.length == s1.sizeOfMatrix) {
             SMat ds = (SMat) d1.mul(s1);
-            ds.saveToFile("mulDSResult.txt");
+           // ds.saveToFile("mulDSResult.txt");
         }
     }
 
