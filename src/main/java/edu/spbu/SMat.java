@@ -2,14 +2,12 @@ package main.java.edu.spbu;//sparse - разреженный
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class SMat implements Matrix {
 
     public SMat(String fileName) throws IOException {
         if (fileName != null) {
             fillArrays(this, fileName);
-
         }
     }
 
@@ -250,9 +248,11 @@ public class SMat implements Matrix {
         a.pointersArr = a.toArray2(pointers);
     }
 
-    public SMat transpose(SMat a) {
+    public SMat transpose(SMat a) throws IOException {
         int j;
         double v;
+        SMat newA = new SMat(null);
+        newA.sizeOfMatrix=a.sizeOfMatrix;
         ArrayList intVectors[] = new ArrayList[a.pointersArr.length - 1];
         ArrayList doubleVectors[] = new ArrayList[a.pointersArr.length - 1];
         for (int i = 0; i < intVectors.length; i++) intVectors[i] = new ArrayList();
@@ -265,20 +265,23 @@ public class SMat implements Matrix {
                 doubleVectors[j].add(v);
             }
         }
-        a.pointersArr[0] = 0;
+        newA.valuesArr=new double[a.valuesArr.length];
+        newA.colsArr=new int[a.colsArr.length];
+        newA.pointersArr=new int[a.pointersArr.length];
+        newA.pointersArr[0] = 0;
         for (int i = 1; i < a.pointersArr.length; i++)
-            a.pointersArr[i] = a.pointersArr[i - 1] + intVectors[i - 1].size();
+            newA.pointersArr[i] = newA.pointersArr[i - 1] + intVectors[i - 1].size();
         int newK = -1;
         for (int i = 0; i < intVectors.length; i++) {
             for (int k = 0; k < intVectors[i].size(); k++) {
                 newK++;
-                a.colsArr[newK] = (int) intVectors[i].get(k);
-                a.valuesArr[newK] = (double) doubleVectors[i].get(k);
+                newA.colsArr[newK] = (int) intVectors[i].get(k);
+                newA.valuesArr[newK] = (double) doubleVectors[i].get(k);
 
             }
         }
 
-        return a;
+        return newA;
     }
 
     public static void printf(SMat a) {

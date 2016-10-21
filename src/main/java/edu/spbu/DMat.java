@@ -130,13 +130,7 @@ public class DMat implements Matrix {
     private Matrix mulDS(SMat b) throws IOException {
         SMat res;
         DMat a = this;
-        //for (int i = 0; i < b.colsArr.length; i++) System.out.print(b.colsArr[i] + "  ");
-
-        //System.out.println();
         SMat bT = b.transpose(b);
-
-        //for (int i = 0; i < b.colsArr.length; i++) System.out.print(b.colsArr[i] + "  ");
-
         res = (SMat) bT.mul(transpose(a));
         res = res.transpose(res);
         res.sizeOfMatrix = b.sizeOfMatrix;
