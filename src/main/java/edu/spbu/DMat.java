@@ -60,16 +60,6 @@ public class DMat implements Matrix {
 
 //    public static void main(String[] args) throws IOException {  }
 
-    public boolean equals(DMat b) {
-        DMat a = this;
-        boolean ans = true;
-        for (int i = 0; i < a.arr.length; i++) {
-            for (int j = 0; j < b.arr.length; j++) {
-                if (a.arr[i][j] != b.arr[i][j]) ans = false;
-            }
-        }
-        return ans;
-    }
 
     private DMat mulDD1(DMat b) throws IOException {
         DMat a = this;
@@ -86,14 +76,14 @@ public class DMat implements Matrix {
         for (int i = 0; i < a.arr.length; i++) {
             columnFactor[i] = 0;
             for (int j = 0; j < a.arr.length / 2; j++) {
-                columnFactor[i] = columnFactor[i] + b.arr[2 * j ][i] * b.arr[2 * j+1][i];
+                columnFactor[i] = columnFactor[i] + b.arr[2 * j][i] * b.arr[2 * j + 1][i];
             }
         }
         for (int i = 0; i < a.arr.length; i++) {
             for (int j = 0; j < b.arr.length; j++) {
                 res.arr[i][j] = -rowFactor[i] - columnFactor[j];
                 for (int k = 0; k < a.arr.length / 2; k++)
-                    res.arr[i][j] = res.arr[i][j] + (a.arr[i][2 * k ] + b.arr[2 * k+1][j]) * (a.arr[i][2 * k+1] + b.arr[2 * k ][j]);
+                    res.arr[i][j] = res.arr[i][j] + (a.arr[i][2 * k] + b.arr[2 * k + 1][j]) * (a.arr[i][2 * k + 1] + b.arr[2 * k][j]);
 
 
             }
@@ -102,7 +92,7 @@ public class DMat implements Matrix {
         if (a.arr.length % 2 == 1) {
             for (int i = 0; i < a.arr.length; i++) {
                 for (int j = 0; j < b.arr.length; j++) {
-                    res.arr[i][j] = res.arr[i][j] + a.arr[i][a.arr.length-1] * b.arr[a.arr.length-1][j];
+                    res.arr[i][j] = res.arr[i][j] + a.arr[i][a.arr.length - 1] * b.arr[a.arr.length - 1][j];
                 }
             }
 
@@ -197,5 +187,23 @@ public class DMat implements Matrix {
             }
         }
         return res;
+    }
+
+    @Override
+    public boolean equals(Object bm) {
+        boolean ans;
+        if (bm instanceof DMat) {
+            boolean ans1=true;
+            DMat a = this;
+            DMat b = (DMat) bm;
+            for (int i = 0; i < a.arr.length; i++) {
+                for (int j = 0; j < b.arr.length; j++) {
+                    if (a.arr[i][j] != b.arr[i][j]) ans1 = false;
+                }
+            }
+            ans=ans1;
+        }
+        else ans=false;
+        return ans;
     }
 }

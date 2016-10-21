@@ -105,15 +105,15 @@ public class SMat implements Matrix {
         }
         if (s1.sizeOfMatrix == s2.sizeOfMatrix) {
             SMat ss = (SMat) s1.mul(s2);
-           // ss.saveToFile("mulSSResult.txt");
+            // ss.saveToFile("mulSSResult.txt");
         }
         if (s1.sizeOfMatrix == d1.arr.length) {
             SMat sd = (SMat) s1.mul(d1);
-           // sd.saveToFile("mulSDResult.txt");
+            // sd.saveToFile("mulSDResult.txt");
         }
         if (d1.arr.length == s1.sizeOfMatrix) {
             SMat ds = (SMat) d1.mul(s1);
-           // ds.saveToFile("mulDSResult.txt");
+            // ds.saveToFile("mulDSResult.txt");
         }
     }
 
@@ -252,7 +252,7 @@ public class SMat implements Matrix {
         int j;
         double v;
         SMat newA = new SMat(null);
-        newA.sizeOfMatrix=a.sizeOfMatrix;
+        newA.sizeOfMatrix = a.sizeOfMatrix;
         ArrayList intVectors[] = new ArrayList[a.pointersArr.length - 1];
         ArrayList doubleVectors[] = new ArrayList[a.pointersArr.length - 1];
         for (int i = 0; i < intVectors.length; i++) intVectors[i] = new ArrayList();
@@ -265,9 +265,9 @@ public class SMat implements Matrix {
                 doubleVectors[j].add(v);
             }
         }
-        newA.valuesArr=new double[a.valuesArr.length];
-        newA.colsArr=new int[a.colsArr.length];
-        newA.pointersArr=new int[a.pointersArr.length];
+        newA.valuesArr = new double[a.valuesArr.length];
+        newA.colsArr = new int[a.colsArr.length];
+        newA.pointersArr = new int[a.pointersArr.length];
         newA.pointersArr[0] = 0;
         for (int i = 1; i < a.pointersArr.length; i++)
             newA.pointersArr[i] = newA.pointersArr[i - 1] + intVectors[i - 1].size();
@@ -313,23 +313,29 @@ public class SMat implements Matrix {
         System.out.println();
     }
 
-    public boolean equals(SMat b) {
-        SMat a = this;
-        boolean ans = true;
-        if (a.valuesArr.length == b.valuesArr.length && a.colsArr.length == b.colsArr.length && a.pointersArr.length == b.pointersArr.length) {
-            for (int i = 0; i < a.valuesArr.length; i++) {
-                if (a.valuesArr[i] != b.valuesArr[i] || a.colsArr[i] != b.colsArr[i])
-                    ans = false;
+    @Override
+    public boolean equals(Object bm) {
+        boolean ans;
+        if (bm instanceof SMat) {
+            SMat b = (SMat) bm;
+            SMat a = this;
+            boolean ans1 = true;
+            if (a.valuesArr.length == b.valuesArr.length && a.colsArr.length == b.colsArr.length && a.pointersArr.length == b.pointersArr.length) {
+                for (int i = 0; i < a.valuesArr.length; i++) {
+                    if (a.valuesArr[i] != b.valuesArr[i] || a.colsArr[i] != b.colsArr[i])
+                        ans1 = false;
 
 
-            }
-            for (int i = 0; i < a.pointersArr.length; i++) {
-                if (a.pointersArr[i] != b.pointersArr[i]) ans = false;
-            }
-            if (a.sizeOfMatrix != b.sizeOfMatrix) ans = false;
-        } else ans = false;
+                }
+                for (int i = 0; i < a.pointersArr.length; i++) {
+                    if (a.pointersArr[i] != b.pointersArr[i]) ans1 = false;
+                }
+                if (a.sizeOfMatrix != b.sizeOfMatrix) ans1 = false;
+            } else ans1 = false;
+            ans=ans1;
+        }
+        else ans=false;
         return ans;
     }
-
 
 }
