@@ -1,4 +1,4 @@
-package main.java.edu.spbu;//D-dense-плотный
+package edu.spbu;//D-dense-плотный
 
 import java.io.*;
 import java.util.ArrayList;

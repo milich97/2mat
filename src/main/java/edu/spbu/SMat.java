@@ -1,4 +1,4 @@
-package main.java.edu.spbu;//sparse - разреженный
+package edu.spbu;//sparse - разреженный
 
 import java.io.*;
 import java.util.ArrayList;

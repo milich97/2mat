@@ -1,4 +1,4 @@
-package main.java.edu.spbu;
+package edu.spbu;
 
 
 public class Main {

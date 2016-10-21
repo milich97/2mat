@@ -1,4 +1,4 @@
-package main.java.edu.spbu;
+package edu.spbu;
 import static org.junit.Assert.assertEquals;
 
 public class DMatTest {
