@@ -2,7 +2,7 @@ package main.java.edu.spbu;//D-dense-плотный
 
 import java.io.*;
 import java.util.ArrayList;
-
+//исправить sMat transpose!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 public class DMat implements Matrix {
 
@@ -11,6 +11,8 @@ public class DMat implements Matrix {
             this.list = new ArrayList();
             this.list = this.getMat(fileName);
             this.arr = this.toArray(this.list);
+            this.list.clear();
+            this.list = null;
         }
     }
 
@@ -22,7 +24,7 @@ public class DMat implements Matrix {
 
         if (bb instanceof DMat) {
             DMat b = (DMat) bb;
-            resD = a.mulDD(b);
+            resD = a.mulDD1(b);                              //!!!!!!!!!!!!!!!!!!!!
             return resD;
         }
         if (bb instanceof SMat) {
@@ -56,9 +58,7 @@ public class DMat implements Matrix {
     public double[][] arr;
     public ArrayList list;
 
-//    public static void main(String[] args) throws IOException {
-//
-//    }
+//    public static void main(String[] args) throws IOException {  }
 
     public boolean equals(DMat b) {
         DMat a = this;
@@ -69,6 +69,48 @@ public class DMat implements Matrix {
             }
         }
         return ans;
+    }
+
+    private DMat mulDD1(DMat b) throws IOException {
+        DMat a = this;
+        DMat res = new DMat(null);
+        res.arr = new double[a.arr.length][a.arr.length];
+        double[] rowFactor = new double[a.arr.length];
+        for (int i = 0; i < a.arr.length; i++) {
+            rowFactor[i] = 0;
+            for (int j = 0; j < a.arr.length / 2; j++) {
+                rowFactor[i] = rowFactor[i] + a.arr[i][2 * j] * a.arr[i][2 * j + 1];
+            }
+        }
+        double[] columnFactor = new double[b.arr.length];
+        for (int i = 0; i < a.arr.length; i++) {
+            columnFactor[i] = 0;
+            for (int j = 0; j < a.arr.length / 2; j++) {
+                columnFactor[i] = columnFactor[i] + b.arr[2 * j ][i] * b.arr[2 * j+1][i];
+            }
+        }
+        for (int i = 0; i < a.arr.length; i++) {
+            for (int j = 0; j < b.arr.length; j++) {
+                res.arr[i][j] = -rowFactor[i] - columnFactor[j];
+                for (int k = 0; k < a.arr.length / 2; k++)
+                    res.arr[i][j] = res.arr[i][j] + (a.arr[i][2 * k ] + b.arr[2 * k+1][j]) * (a.arr[i][2 * k+1] + b.arr[2 * k ][j]);
+
+
+            }
+        }
+
+        if (a.arr.length % 2 == 1) {
+            for (int i = 0; i < a.arr.length; i++) {
+                for (int j = 0; j < b.arr.length; j++) {
+                    res.arr[i][j] = res.arr[i][j] + a.arr[i][a.arr.length-1] * b.arr[a.arr.length-1][j];
+                }
+            }
+
+
+        }
+
+
+        return res;
     }
 
     private DMat mulDD(DMat b) throws IOException {
@@ -88,28 +130,28 @@ public class DMat implements Matrix {
     private Matrix mulDS(SMat b) throws IOException {
         SMat res;
         DMat a = this;
-        DMat aT = transpose(a);
-        System.out.println(a.equals(aT));
+        //for (int i = 0; i < b.colsArr.length; i++) System.out.print(b.colsArr[i] + "  ");
+
+        //System.out.println();
         SMat bT = b.transpose(b);
-        res = (SMat) bT.mul(aT);
-//        for (int i = 0; i < b.values.size(); i++) {
-//            System.out.print(b.values.get(i) + " ");
-//        }
+
+        //for (int i = 0; i < b.colsArr.length; i++) System.out.print(b.colsArr[i] + "  ");
+
+        res = (SMat) bT.mul(transpose(a));
         res = res.transpose(res);
         res.sizeOfMatrix = b.sizeOfMatrix;
         return res;
     }
 
-    private DMat transpose(DMat a) {
-
-        for (int i = 1; i < a.arr.length; i++) {
-            for (int j = 0; j < i; j++) {
-                double k = a.arr[i][j];
-                a.arr[i][j] = a.arr[j][i];
-                a.arr[j][i] = k;
+    private DMat transpose(DMat a) throws IOException {
+        DMat newA = new DMat(null);
+        newA.arr = new double[a.arr.length][a.arr.length];
+        for (int i = 0; i < a.arr.length; i++) {
+            for (int j = 0; j < a.arr.length; j++) {
+                newA.arr[i][j] = a.arr[j][i];
             }
         }
-        return a;
+        return newA;
     }
 
     public static void printf(DMat a) {
@@ -153,7 +195,7 @@ public class DMat implements Matrix {
         return arrayList;
     }
 
-    public double[][] toArray(ArrayList<ArrayList> arrayList) {
+    private double[][] toArray(ArrayList<ArrayList> arrayList) {
         double[][] res = new double[arrayList.size()][arrayList.size()];
         for (int i = 0; i < arrayList.size(); i++) {
             for (int j = 0; j < arrayList.size(); j++) {

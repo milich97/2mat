@@ -1,10 +1,4 @@
 package main.java.edu.spbu;
-
-import java.util.ArrayList;
-
-import static main.java.edu.spbu.SMat.fillArrays;
-//import static main.java.edu.spbu.SMat.sizeOfMatrix;
-import static main.java.edu.spbu.SMat.printf;
 import static org.junit.Assert.assertEquals;
 
 public class DMatTest {
@@ -16,6 +10,7 @@ public class DMatTest {
         DMat c = (DMat) a.mul(b);
         assertEquals(true, c.equals(goldenResult));
     }
+
 
     @org.junit.Test
     public void mulDS() throws Exception {
@@ -43,6 +38,7 @@ public class DMatTest {
         SMat c = (SMat) a.mul(b);
         assertEquals(true, c.equals(goldenResult));
     }
+
 }
 
 

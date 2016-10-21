@@ -7,8 +7,28 @@ import java.util.Date;
 public class SMat implements Matrix {
 
     public SMat(String fileName) throws IOException {
-        if (fileName != null)
+        if (fileName != null) {
             fillArrays(this, fileName);
+
+        }
+    }
+
+    private double[] toArray1(ArrayList<Double> arrayList) {
+        double[] res = new double[arrayList.size()];
+        for (int i = 0; i < arrayList.size(); i++) {
+            res[i] = (double) arrayList.get(i);
+        }
+
+        return res;
+    }
+
+    private int[] toArray2(ArrayList<Integer> arrayList) {
+        int[] res = new int[arrayList.size()];
+        for (int i = 0; i < arrayList.size(); i++) {
+            res[i] = (int) arrayList.get(i);
+        }
+
+        return res;
     }
 
 
@@ -34,25 +54,25 @@ public class SMat implements Matrix {
         SMat c = this;
         double nol = 0;
         PrintWriter printWriter = new PrintWriter(new FileWriter(nameOfFile));
-        for (int i = 0; i < c.pointers.size() - 1; i++) {
+        for (int i = 0; i < c.pointersArr.length - 1; i++) {
             ArrayList<Integer> k = new ArrayList();
-            for (int ii = c.pointers.get(i); ii < c.pointers.get(i + 1); ii++) {
+            for (int ii = c.pointersArr[i]; ii < c.pointersArr[i + 1]; ii++) {
                 k.add(ii);
             }
             if (k.size() != 0) {
                 int elemOfMasK = 0;
-                for (int j = 0; j < c.pointers.size() - 1; j++) {
+                for (int j = 0; j < c.pointersArr.length - 1; j++) {
 
                     if (elemOfMasK == k.size()) {
-                        for (int l = j; l < c.pointers.size() - 1; l++) printWriter.print(nol + " ");
+                        for (int l = j; l < c.pointersArr.length - 1; l++) printWriter.print(nol + " ");
 
 
                         break;
                     }
 
-                    if (c.cols.get(k.get(elemOfMasK)) == j) {
+                    if (c.colsArr[k.get(elemOfMasK)] == j) {
 
-                        printWriter.print(c.values.get(k.get(elemOfMasK)) + " ");
+                        printWriter.print(c.valuesArr[k.get(elemOfMasK)] + " ");
                         elemOfMasK++;
 
                     } else printWriter.print(nol + " ");
@@ -61,24 +81,25 @@ public class SMat implements Matrix {
 
                 printWriter.println();
             } else {
-                for (int j = 0; j < c.pointers.size() - 1; j++) printWriter.print(nol + " ");
+                for (int j = 0; j < c.pointersArr.length - 1; j++) printWriter.print(nol + " ");
                 printWriter.println();
             }
         }
         printWriter.close();
     }
 
-    public ArrayList<Double> values;
-    public ArrayList<Integer> cols;
-    public ArrayList<Integer> pointers;
+    public double[] valuesArr;
+    public int[] colsArr;
+    public int[] pointersArr;
     public int sizeOfMatrix;
 
 
     public static void main(String[] args) throws IOException {
-        SMat s1 = new SMat("2.txt");
-        SMat s2 = new SMat("2.txt");
-        DMat d1 = new DMat("2.txt");
-        DMat d2 = new DMat("2.txt");
+        DMat d1 = new DMat("5.txt");
+        DMat d2 = new DMat("5.txt");
+        SMat s1 = new SMat("5.txt");
+        SMat s2 = new SMat("5.txt");
+
 
         if (d1.arr.length == d2.arr.length) {
             DMat dd = (DMat) d1.mul(d2);
@@ -96,7 +117,6 @@ public class SMat implements Matrix {
             SMat ds = (SMat) d1.mul(s1);
             ds.saveToFile("mulDSResult.txt");
         }
-
     }
 
 
@@ -104,36 +124,38 @@ public class SMat implements Matrix {
         SMat c = new SMat(null);
         SMat a = this;
         c.sizeOfMatrix = a.sizeOfMatrix;
-        c.values = new ArrayList<>();
-        c.cols = new ArrayList<>();
-        c.pointers = new ArrayList<>();
+        ArrayList<Double> values = new ArrayList<>();
+        ArrayList<Integer> cols = new ArrayList<>();
+        ArrayList<Integer> pointers = new ArrayList<>();
         double res;
-        c.pointers.add(0);
-        for (int stroka = 0; stroka < a.pointers.size() - 1; stroka++) {
-            for (int stolb = 0; stolb < b.list.size(); stolb++) {
+        pointers.add(0);
+        for (int stroka = 0; stroka < a.pointersArr.length - 1; stroka++) {
+            for (int stolb = 0; stolb < b.arr.length; stolb++) {
                 res = 0;
                 SMat v1 = new SMat(null);
                 v1.sizeOfMatrix = a.sizeOfMatrix;
-                v1.values = new ArrayList<>();
-                v1.cols = new ArrayList<>();
-                v1.pointers = new ArrayList<>();
-                for (int i = a.pointers.get(stroka); i < a.pointers.get(stroka + 1); i++) {
-                    v1.values.add(a.values.get(i));
-                    v1.cols.add(a.cols.get(i));
+                v1.valuesArr = new double[a.pointersArr[stroka + 1] - a.pointersArr[stroka]];
+                v1.colsArr = new int[a.pointersArr[stroka + 1] - a.pointersArr[stroka]];
+                for (int i = a.pointersArr[stroka]; i < a.pointersArr[stroka + 1]; i++) {
+                    v1.valuesArr[i - a.pointersArr[stroka]] = a.valuesArr[i];
+                    v1.colsArr[i - a.pointersArr[stroka]] = a.colsArr[i];
                 }
 
-                for (int i = 0; i < v1.values.size(); i++) {
-                    res = res + v1.values.get(i) * b.arr[v1.cols.get(i)][stolb];
+
+                for (int i = 0; i < v1.valuesArr.length; i++) {
+                    res = res + v1.valuesArr[i] * b.arr[v1.colsArr[i]][stolb];
                 }
 
                 if (res != 0) {
-                    c.values.add(res);
-                    c.cols.add(stolb);
+                    values.add(res);
+                    cols.add(stolb);
                 }
             }
-            c.pointers.add(c.values.size());
+            pointers.add(values.size());
         }
-
+        c.valuesArr = toArray1(values);
+        c.colsArr = toArray2(cols);
+        c.pointersArr = toArray2(pointers);
 
         return c;
     }
@@ -142,39 +164,43 @@ public class SMat implements Matrix {
         SMat a = this;
         SMat c = new SMat(null);
         b = b.transpose(b);
-        c.values = new ArrayList<>();
-        c.cols = new ArrayList<>();
-        c.pointers = new ArrayList<>();
+        ArrayList<Double> values = new ArrayList<>();
+        ArrayList<Integer> cols = new ArrayList<>();
+        ArrayList<Integer> pointers = new ArrayList<>();
         c.sizeOfMatrix = a.sizeOfMatrix;
         double res;
-        c.pointers.add(0);
-        for (int stroka = 0; stroka < a.pointers.size() - 1; stroka++) {
-            for (int stolb = 0; stolb < b.pointers.size() - 1; stolb++) {
+        pointers.add(0);
+        for (int stroka = 0; stroka < a.pointersArr.length - 1; stroka++) {
+            for (int stolb = 0; stolb < b.pointersArr.length - 1; stolb++) {
                 SMat v1 = new SMat(null);
                 v1.sizeOfMatrix = a.sizeOfMatrix;
-                v1.values = new ArrayList<>();
-                v1.cols = new ArrayList<>();
-                v1.pointers = new ArrayList<>();
+                v1.valuesArr = new double[a.pointersArr[stroka + 1] - a.pointersArr[stroka]];
+                v1.colsArr = new int[a.pointersArr[stroka + 1] - a.pointersArr[stroka]];
                 SMat v2 = new SMat(null);
-                v2.values = new ArrayList<>();
-                v2.cols = new ArrayList<>();
-                v2.pointers = new ArrayList<>();
-                for (int i = a.pointers.get(stroka); i < a.pointers.get(stroka + 1); i++) {
-                    v1.values.add(a.values.get(i));
-                    v1.cols.add(a.cols.get(i));
+                v2.sizeOfMatrix = b.sizeOfMatrix;
+                v2.valuesArr = new double[b.pointersArr[stroka + 1] - b.pointersArr[stroka]];
+                v2.colsArr = new int[b.pointersArr[stroka + 1] - b.pointersArr[stroka]];
+
+                for (int i = a.pointersArr[stroka]; i < a.pointersArr[stroka + 1]; i++) {
+                    v1.valuesArr[i - a.pointersArr[stroka]] = a.valuesArr[i];
+                    v1.colsArr[i - a.pointersArr[stroka]] = a.colsArr[i];
                 }
-                for (int i = b.pointers.get(stolb); i < b.pointers.get(stolb + 1); i++) {
-                    v2.values.add(b.values.get(i));
-                    v2.cols.add(b.cols.get(i));
+
+                for (int i = b.pointersArr[stolb]; i < b.pointersArr[stolb + 1]; i++) {
+                    v2.valuesArr[i - b.pointersArr[stolb]] = b.valuesArr[i];
+                    v2.colsArr[i - b.pointersArr[stolb]] = b.colsArr[i];
                 }
                 res = v1.scalarMul(v2);
                 if (res != 0) {
-                    c.values.add(res);
-                    c.cols.add(stolb);
+                    values.add(res);
+                    cols.add(stolb);
                 }
             }
-            c.pointers.add(c.values.size());
+            pointers.add(values.size());
         }
+        c.valuesArr = toArray1(values);
+        c.colsArr = toArray2(cols);
+        c.pointersArr = toArray2(pointers);
         return c;
     }
 
@@ -183,12 +209,12 @@ public class SMat implements Matrix {
         int[] x = new int[a.sizeOfMatrix];
         for (int i = 0; i < x.length; i++) x[i] = -1;
         double s = 0;
-        for (int i = 0; i < a.values.size(); i++) {
-            x[a.cols.get(i)] = i;
+        for (int i = 0; i < a.valuesArr.length; i++) {
+            x[a.colsArr[i]] = i;
         }
-        for (int i = 0; i < b.values.size(); i++) {
-            if (x[b.cols.get(i)] != -1) {
-                s = s + b.values.get(i) * a.values.get(x[b.cols.get(i)]);
+        for (int i = 0; i < b.valuesArr.length; i++) {
+            if (x[b.colsArr[i]] != -1) {
+                s = s + b.valuesArr[i] * a.valuesArr[x[b.colsArr[i]]];
             }
         }
         return s;
@@ -197,10 +223,10 @@ public class SMat implements Matrix {
     public static void fillArrays(SMat a, String fileName) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
         String s = reader.readLine();
-        a.values = new ArrayList<>();
-        a.cols = new ArrayList<>();
-        a.pointers = new ArrayList<>();
-        a.pointers.add(0);
+        ArrayList<Double> values = new ArrayList<>();
+        ArrayList<Integer> cols = new ArrayList<>();
+        ArrayList<Integer> pointers = new ArrayList<>();
+        pointers.add(0);
         a.sizeOfMatrix = 0;
         while (s != null) {
             a.sizeOfMatrix++;
@@ -208,49 +234,46 @@ public class SMat implements Matrix {
             for (String val : s.split(" ")) {
 
                 if (Double.parseDouble(val) != 0) {
-                    a.values.add(Double.parseDouble(val));
-                    a.cols.add(collNumber);
+                    values.add(Double.parseDouble(val));
+                    cols.add(collNumber);
                 }
                 collNumber++;
             }
 
 
             s = reader.readLine();
-            if (s != null) a.pointers.add(a.values.size());
+            if (s != null) pointers.add(values.size());
         }
-        a.pointers.add(a.values.size());
-
+        pointers.add(values.size());
+        a.valuesArr = a.toArray1(values);
+        a.colsArr = a.toArray2(cols);
+        a.pointersArr = a.toArray2(pointers);
     }
 
     public SMat transpose(SMat a) {
         int j;
         double v;
-        ArrayList intVectors[] = new ArrayList[a.pointers.size() - 1];
-        ArrayList doubleVectors[] = new ArrayList[a.pointers.size() - 1];
-
+        ArrayList intVectors[] = new ArrayList[a.pointersArr.length - 1];
+        ArrayList doubleVectors[] = new ArrayList[a.pointersArr.length - 1];
         for (int i = 0; i < intVectors.length; i++) intVectors[i] = new ArrayList();
         for (int i = 0; i < doubleVectors.length; i++) doubleVectors[i] = new ArrayList();
-
-        for (int i = 0; i < a.pointers.size() - 1; i++) {
-            for (int k = a.pointers.get(i); k < a.pointers.get(i + 1); k++) {
-                j = a.cols.get(k);
-                v = a.values.get(k);
+        for (int i = 0; i < a.pointersArr.length - 1; i++) {
+            for (int k = a.pointersArr[i]; k < a.pointersArr[i + 1]; k++) {
+                j = a.colsArr[k];
+                v = a.valuesArr[k];
                 intVectors[j].add(i);
                 doubleVectors[j].add(v);
             }
         }
-        a.cols.clear();
-        a.values.clear();
-        int size = a.pointers.size();
-        a.pointers.clear();
-        a.pointers.add(0);
-        for (int i = 1; i < size; i++) {
-            a.pointers.add(a.pointers.get(i - 1) + intVectors[i - 1].size());
-        }
+        a.pointersArr[0] = 0;
+        for (int i = 1; i < a.pointersArr.length; i++)
+            a.pointersArr[i] = a.pointersArr[i - 1] + intVectors[i - 1].size();
+        int newK = -1;
         for (int i = 0; i < intVectors.length; i++) {
             for (int k = 0; k < intVectors[i].size(); k++) {
-                a.cols.add((int) intVectors[i].get(k));
-                a.values.add((double) doubleVectors[i].get(k));
+                newK++;
+                a.colsArr[newK] = (int) intVectors[i].get(k);
+                a.valuesArr[newK] = (double) doubleVectors[i].get(k);
 
             }
         }
@@ -259,9 +282,9 @@ public class SMat implements Matrix {
     }
 
     public static void printf(SMat a) {
-        printf(a.values);
-        printf(a.cols);
-        if (a.pointers != null) printf(a.pointers);
+        printf(a.valuesArr);
+        printf(a.colsArr);
+        if (a.pointersArr != null) printf(a.pointersArr);
     }
 
     private static void printf(DMat a) {
@@ -273,9 +296,16 @@ public class SMat implements Matrix {
         }
     }
 
-    public static void printf(ArrayList arrayList) {
-        for (int i = 0; i < arrayList.size(); i++) {
-            System.out.print(arrayList.get(i) + "  ");
+    public static void printf(double[] d) {
+        for (int i = 0; i < d.length; i++) {
+            System.out.print(d[i] + "  ");
+        }
+        System.out.println();
+    }
+
+    public static void printf(int[] d) {
+        for (int i = 0; i < d.length; i++) {
+            System.out.print(d[i] + "  ");
         }
         System.out.println();
     }
@@ -283,17 +313,17 @@ public class SMat implements Matrix {
     public boolean equals(SMat b) {
         SMat a = this;
         boolean ans = true;
-        if (a.values.size() == b.values.size() && a.cols.size() == b.cols.size() && a.pointers.size() == b.pointers.size()) {
-            for (int i = 0; i < a.values.size(); i++) {
-                if ((double) a.values.get(i) != (double) b.values.get(i) || (int) a.cols.get(i) != (int) b.cols.get(i))
+        if (a.valuesArr.length == b.valuesArr.length && a.colsArr.length == b.colsArr.length && a.pointersArr.length == b.pointersArr.length) {
+            for (int i = 0; i < a.valuesArr.length; i++) {
+                if (a.valuesArr[i] != b.valuesArr[i] || a.colsArr[i] != b.colsArr[i])
                     ans = false;
 
 
             }
-            for (int i = 0; i < a.pointers.size(); i++) {
-                if (a.pointers.get(i) != b.pointers.get(i)) ans = false;
+            for (int i = 0; i < a.pointersArr.length; i++) {
+                if (a.pointersArr[i] != b.pointersArr[i]) ans = false;
             }
-            if ((int) a.sizeOfMatrix != (int) b.sizeOfMatrix) ans = false;
+            if (a.sizeOfMatrix != b.sizeOfMatrix) ans = false;
         } else ans = false;
         return ans;
     }
