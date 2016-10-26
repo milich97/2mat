@@ -2,6 +2,8 @@ package edu.spbu;//sparse - разреженный
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
 
 public class SMat implements Matrix {
 
@@ -93,27 +95,27 @@ public class SMat implements Matrix {
 
 
     public static void main(String[] args) throws IOException {
-        DMat d1 = new DMat("5.txt");
-        DMat d2 = new DMat("5.txt");
-        SMat s1 = new SMat("5.txt");
-        SMat s2 = new SMat("5.txt");
+        DMat d1 = new DMat("3.txt");
+        DMat d2 = new DMat("3.txt");
+        SMat s1 = new SMat("3.txt");
+        SMat s2 = new SMat("3.txt");
 
 
         if (d1.arr.length == d2.arr.length) {
             DMat dd = (DMat) d1.mul(d2);
-            //dd.saveToFile("mulDDResult.txt");
+            dd.saveToFile("mulDDResult.txt");
         }
         if (s1.sizeOfMatrix == s2.sizeOfMatrix) {
             SMat ss = (SMat) s1.mul(s2);
-            // ss.saveToFile("mulSSResult.txt");
+            ss.saveToFile("mulSSResult.txt");
         }
         if (s1.sizeOfMatrix == d1.arr.length) {
             SMat sd = (SMat) s1.mul(d1);
-            // sd.saveToFile("mulSDResult.txt");
+            sd.saveToFile("mulSDResult.txt");
         }
         if (d1.arr.length == s1.sizeOfMatrix) {
             SMat ds = (SMat) d1.mul(s1);
-            // ds.saveToFile("mulDSResult.txt");
+            ds.saveToFile("mulDSResult.txt");
         }
     }
 
@@ -176,8 +178,8 @@ public class SMat implements Matrix {
                 v1.colsArr = new int[a.pointersArr[stroka + 1] - a.pointersArr[stroka]];
                 SMat v2 = new SMat(null);
                 v2.sizeOfMatrix = b.sizeOfMatrix;
-                v2.valuesArr = new double[b.pointersArr[stroka + 1] - b.pointersArr[stroka]];
-                v2.colsArr = new int[b.pointersArr[stroka + 1] - b.pointersArr[stroka]];
+                v2.valuesArr = new double[b.pointersArr[stolb + 1] - b.pointersArr[stolb]];
+                v2.colsArr = new int[b.pointersArr[stolb + 1] - b.pointersArr[stolb]];
 
                 for (int i = a.pointersArr[stroka]; i < a.pointersArr[stroka + 1]; i++) {
                     v1.valuesArr[i - a.pointersArr[stroka]] = a.valuesArr[i];
@@ -332,9 +334,8 @@ public class SMat implements Matrix {
                 }
                 if (a.sizeOfMatrix != b.sizeOfMatrix) ans1 = false;
             } else ans1 = false;
-            ans=ans1;
-        }
-        else ans=false;
+            ans = ans1;
+        } else ans = false;
         return ans;
     }
 

@@ -64,7 +64,7 @@ public class DMat implements Matrix {
     private DMat mulDD1(DMat b) throws IOException {
         DMat a = this;
         DMat res = new DMat(null);
-        res.arr = new double[a.arr.length][a.arr.length];
+        res.arr = new double[a.arr.length][b.arr.length];
         double[] rowFactor = new double[a.arr.length];
         for (int i = 0; i < a.arr.length; i++) {
             rowFactor[i] = 0;
