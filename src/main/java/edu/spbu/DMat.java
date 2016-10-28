@@ -60,48 +60,47 @@ public class DMat implements Matrix {
 
 //    public static void main(String[] args) throws IOException {  }
 
+//    private DMat mulDD1(DMat b) throws IOException {
+//        DMat a = this;
+//        DMat res = new DMat(null);
+//        res.arr = new double[a.arr.length][b.arr.length];
+//        double[] rowFactor = new double[a.arr.length];
+//        for (int i = 0; i < a.arr.length; i++) {
+//            rowFactor[i] = 0;
+//            for (int j = 0; j < a.arr.length / 2; j++) {
+//                rowFactor[i] = rowFactor[i] + a.arr[i][2 * j] * a.arr[i][2 * j + 1];
+//            }
+//        }
+//        double[] columnFactor = new double[b.arr.length];
+//        for (int i = 0; i < a.arr.length; i++) {
+//            columnFactor[i] = 0;
+//            for (int j = 0; j < a.arr.length / 2; j++) {
+//                columnFactor[i] = columnFactor[i] + b.arr[2 * j][i] * b.arr[2 * j + 1][i];
+//            }
+//        }
+//        for (int i = 0; i < a.arr.length; i++) {
+//            for (int j = 0; j < b.arr.length; j++) {
+//                res.arr[i][j] = -rowFactor[i] - columnFactor[j];
+//                for (int k = 0; k < a.arr.length / 2; k++)
+//                    res.arr[i][j] = res.arr[i][j] + (a.arr[i][2 * k] + b.arr[2 * k + 1][j]) * (a.arr[i][2 * k + 1] + b.arr[2 * k][j]);
 //
-    private DMat mulDD1(DMat b) throws IOException {
-        DMat a = this;
-        DMat res = new DMat(null);
-        res.arr = new double[a.arr.length][b.arr.length];
-        double[] rowFactor = new double[a.arr.length];
-        for (int i = 0; i < a.arr.length; i++) {
-            rowFactor[i] = 0;
-            for (int j = 0; j < a.arr.length / 2; j++) {
-                rowFactor[i] = rowFactor[i] + a.arr[i][2 * j] * a.arr[i][2 * j + 1];
-            }
-        }
-        double[] columnFactor = new double[b.arr.length];
-        for (int i = 0; i < a.arr.length; i++) {
-            columnFactor[i] = 0;
-            for (int j = 0; j < a.arr.length / 2; j++) {
-                columnFactor[i] = columnFactor[i] + b.arr[2 * j][i] * b.arr[2 * j + 1][i];
-            }
-        }
-        for (int i = 0; i < a.arr.length; i++) {
-            for (int j = 0; j < b.arr.length; j++) {
-                res.arr[i][j] = -rowFactor[i] - columnFactor[j];
-                for (int k = 0; k < a.arr.length / 2; k++)
-                    res.arr[i][j] = res.arr[i][j] + (a.arr[i][2 * k] + b.arr[2 * k + 1][j]) * (a.arr[i][2 * k + 1] + b.arr[2 * k][j]);
-
-
-            }
-        }
-
-        if (a.arr.length % 2 == 1) {
-            for (int i = 0; i < a.arr.length; i++) {
-                for (int j = 0; j < b.arr.length; j++) {
-                    res.arr[i][j] = res.arr[i][j] + a.arr[i][a.arr.length - 1] * b.arr[a.arr.length - 1][j];
-                }
-            }
-
-
-        }
-
-
-        return res;
-    }
+//
+//            }
+//        }
+//
+//        if (a.arr.length % 2 == 1) {
+//            for (int i = 0; i < a.arr.length; i++) {
+//                for (int j = 0; j < b.arr.length; j++) {
+//                    res.arr[i][j] = res.arr[i][j] + a.arr[i][a.arr.length - 1] * b.arr[a.arr.length - 1][j];
+//                }
+//            }
+//
+//
+//        }
+//
+//
+//        return res;
+//    }
 
     private DMat mulDD(DMat b) throws IOException {
         DMat a = this;
