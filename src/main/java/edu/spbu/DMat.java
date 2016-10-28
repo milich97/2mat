@@ -2,7 +2,7 @@ package edu.spbu;//D-dense-плотный
 
 import java.io.*;
 import java.util.ArrayList;
-//исправить sMat transpose!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 public class DMat implements Matrix {
 
@@ -24,7 +24,7 @@ public class DMat implements Matrix {
 
         if (bb instanceof DMat) {
             DMat b = (DMat) bb;
-            resD = a.mulDD1(b);                              //!!!!!!!!!!!!!!!!!!!!
+            resD = a.mulDD(b);                              //!!!!!!!!!!!!!!!!!!!!
             return resD;
         }
         if (bb instanceof SMat) {
@@ -106,11 +106,12 @@ public class DMat implements Matrix {
     private DMat mulDD(DMat b) throws IOException {
         DMat a = this;
         DMat res = new DMat(null);
+        b=b.transpose(b);
         res.arr = new double[a.arr.length][a.arr.length];
         for (int i = 0; i < a.arr.length; i++) {
             for (int j = 0; j < a.arr.length; j++) {
                 for (int k = 0; k < a.arr.length; k++) {
-                    res.arr[i][j] = res.arr[i][j] + a.arr[i][k] * b.arr[k][j];
+                    res.arr[i][j] = res.arr[i][j] + a.arr[i][k] * b.arr[j][k];
                 }
             }
         }

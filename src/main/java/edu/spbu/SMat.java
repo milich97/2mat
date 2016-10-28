@@ -1,9 +1,7 @@
 package edu.spbu;//sparse - разреженный
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 public class SMat implements Matrix {
 
@@ -117,6 +115,7 @@ public class SMat implements Matrix {
             SMat ds = (SMat) d1.mul(s1);
             ds.saveToFile("mulDSResult.txt");
         }
+
     }
 
 
