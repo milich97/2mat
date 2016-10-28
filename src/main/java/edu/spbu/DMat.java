@@ -60,7 +60,7 @@ public class DMat implements Matrix {
 
 //    public static void main(String[] args) throws IOException {  }
 
-
+//
     private DMat mulDD1(DMat b) throws IOException {
         DMat a = this;
         DMat res = new DMat(null);
